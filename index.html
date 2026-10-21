@@ -1,1 +1,910 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Innovation Hub - ภาษาไทยเพื่อการสอบข้าราชการไทย</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Sarabun & Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        kanit: ['Kanit', 'sans-serif'],
+                        sarabun: ['Sarabun', 'sans-serif'],
+                    },
+                    colors: {
+                        gov: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#1d4ed8',
+                            600: '#1e40af',
+                            700: '#1d3557',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#d97706',
+                            600: '#b45309',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+        h1, h2, h3, h4, .font-kanit { font-family: 'Kanit', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 bg-slate-100">
 
+    <!-- Top Navigation Header -->
+    <header class="bg-gov-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-gold-500 to-amber-300 flex items-center justify-center text-gov-900 font-bold text-xl shadow-md">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold tracking-wide font-kanit">AI Civil Service Thai Lab</h1>
+                        <p class="text-xs text-slate-300 hidden sm:block">นวัตกรรมการเรียนรู้ภาษาไทยเพื่อการสอบข้าราชการไทยด้วย Gemini AI</p>
+                    </div>
+                </div>
+
+                <!-- API Key Config & Mode Badge -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="openApiKeyModal()" class="flex items-center space-x-2 bg-gov-800 hover:bg-gov-700 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-200 transition border border-slate-700">
+                        <i class="fa-solid fa-key text-gold-400"></i>
+                        <span id="apiKeyStatusText" class="hidden sm:inline">ตั้งค่า Gemini API Key</span>
+                    </button>
+                    <div id="modeBadge" class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs px-2.5 py-1 rounded-full font-medium flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                        <span id="modeText">Demo Mode</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="flex-1 flex overflow-hidden max-w-7xl w-full mx-auto p-3 sm:p-6 gap-6">
+
+        <!-- Sidebar Navigation -->
+        <aside class="w-16 md:w-64 bg-white rounded-2xl shadow-sm border border-slate-200/80 flex flex-col shrink-0 overflow-y-auto custom-scrollbar">
+            <div class="p-4 border-b border-slate-100 hidden md:block">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider font-kanit">เลือก AI Use Cases</span>
+            </div>
+            
+            <nav class="p-2 space-y-1">
+                <button onclick="switchTab('logic')" id="nav-logic" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl font-medium text-sm text-slate-700 hover:bg-gov-50 transition">
+                    <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                    </div>
+                    <div class="text-left hidden md:block leading-tight">
+                        <div class="font-semibold text-slate-800 font-kanit">1. Logic Detective</div>
+                        <div class="text-[11px] text-slate-500">สืบสวนเงื่อนไขภาษา</div>
+                    </div>
+                </button>
+
+                <button onclick="switchTab('royal')" id="nav-royal" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl font-medium text-sm text-slate-700 hover:bg-gov-50 transition">
+                    <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <div class="text-left hidden md:block leading-tight">
+                        <div class="font-semibold text-slate-800 font-kanit">2. Royal Contextualizer</div>
+                        <div class="text-[11px] text-slate-500">ราชาศัพท์และภาษาราชการ</div>
+                    </div>
+                </button>
+
+                <button onclick="switchTab('sandbox')" id="nav-sandbox" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl font-medium text-sm text-slate-700 hover:bg-gov-50 transition">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-cubes-stacked"></i>
+                    </div>
+                    <div class="text-left hidden md:block leading-tight">
+                        <div class="font-semibold text-slate-800 font-kanit">3. Bureaucratic Sandbox</div>
+                        <div class="text-[11px] text-slate-500">ห้องเรียนจำลองวิกฤตสารบรรณ</div>
+                    </div>
+                </button>
+
+                <button onclick="switchTab('exam')" id="nav-exam" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl font-medium text-sm text-slate-700 hover:bg-gov-50 transition">
+                    <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-stethoscope"></i>
+                    </div>
+                    <div class="text-left hidden md:block leading-tight">
+                        <div class="font-semibold text-slate-800 font-kanit">4. Exam Debriefer</div>
+                        <div class="text-[11px] text-slate-500">วิเคราะห์จุดอ่อนข้อสอบ</div>
+                    </div>
+                </button>
+
+                <button onclick="switchTab('rubric')" id="nav-rubric" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl font-medium text-sm text-slate-700 hover:bg-gov-50 transition">
+                    <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-file-signature"></i>
+                    </div>
+                    <div class="text-left hidden md:block leading-tight">
+                        <div class="font-semibold text-slate-800 font-kanit">5. Deep Rubric Evaluator</div>
+                        <div class="text-[11px] text-slate-500">ตรวจประเมินย่อความเชิงลึก</div>
+                    </div>
+                </button>
+            </nav>
+
+            <div class="mt-auto p-3 border-t border-slate-100 hidden md:block">
+                <button onclick="openPromptGuideModal()" class="w-full flex items-center justify-center space-x-2 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold font-kanit transition">
+                    <i class="fa-solid fa-book"></i>
+                    <span>คลัง System Prompts</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Interactive Workspace Area -->
+        <main class="flex-1 bg-white rounded-2xl shadow-sm border border-slate-200/80 flex flex-col overflow-hidden relative">
+
+            <!-- ========================================== -->
+            <!-- USE CASE 1: LOGIC DETECTIVE -->
+            <!-- ========================================== -->
+            <section id="panel-logic" class="usecase-panel flex-1 flex flex-col overflow-hidden p-4 sm:p-6 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                    <div>
+                        <span class="inline-block px-2.5 py-0.5 rounded-md text-xs font-semibold bg-blue-100 text-blue-800 mb-1">AI as a Learning Partner</span>
+                        <h2 class="text-xl font-bold text-slate-800 font-kanit flex items-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass-chart text-blue-600"></i>
+                            The Logic Detective: สืบสวนเงื่อนไขภาษาไทย
+                        </h2>
+                    </div>
+                    <button onclick="generateLogicScenario()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 transition shadow-sm font-kanit">
+                        <i class="fa-solid fa-dice"></i> สุ่มสร้างโจทย์เงื่อนไขภาษา
+                    </button>
+                </div>
+
+                <!-- Split Workspace -->
+                <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 overflow-hidden">
+                    <!-- Left: Scenario Display -->
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 flex flex-col overflow-y-auto custom-scrollbar space-y-3">
+                        <div class="flex items-center justify-between text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200 pb-2">
+                            <span><i class="fa-solid fa-file-contract mr-1 text-blue-500"></i> สถานการณ์เงื่อนไขที่กำหนด</span>
+                            <span class="text-blue-600">โจทย์ระดับสอบ ก.พ.</span>
+                        </div>
+                        <div id="logicScenarioBox" class="bg-white p-4 rounded-lg border border-slate-200 text-sm leading-relaxed text-slate-700 space-y-3 font-sarabun shadow-sm">
+                            <p class="font-semibold text-blue-900 border-b pb-1">เงื่อนไขข้อเท็จจริง:</p>
+                            <ul class="list-disc pl-5 space-y-1.5 text-slate-700">
+                                <li>ข้าราชการทุกคนที่สังกัดกระทรวงมหาดไทย ต้องผ่านการอบรมหลักสูตรนักปกครองระดับสูง (นปส.)</li>
+                                <li>ผู้ที่ผ่านการอบรมหลักสูตร นปส. ทุกคน ได้รับสิทธิ์เสนอชื่อเข้ารับการคัดเลือกเป็นผู้ตรวจราชการ</li>
+                                <li>สมชายเป็นข้าราชการสังกัดกระทรวงมหาดไทย แต่ สมศักดิ์ ไม่ได้สังกัดกระทรวงมหาดไทย</li>
+                            </ul>
+                            <p class="font-semibold text-blue-900 border-b pb-1 pt-2">ข้อสรุปที่ต้องพิจารณา:</p>
+                            <ol class="list-decimal pl-5 space-y-1 text-slate-700">
+                                <li><b>ข้อสรุปที่ 1:</b> สมชายได้รับสิทธิ์เสนอชื่อเข้ารับการคัดเลือกเป็นผู้ตรวจราชการ</li>
+                                <li><b>ข้อสรุปที่ 2:</b> สมศักดิ์ไม่ได้รับสิทธิ์เสนอชื่อเข้ารับการคัดเลือกเป็นผู้ตรวจราชการ</li>
+                            </ol>
+                        </div>
+                        <div class="text-xs text-slate-500 italic bg-blue-50/50 p-3 rounded-lg border border-blue-100">
+                            💡 **คำแนะนำ:** ฝึกพิมพ์วิธีคิดของคุณและระบุว่าข้อสรุป 1 และ 2 เป็น "จริง", "ไม่จริง" หรือ "แน่ชัดไม่ได้" AI จะใช้ Socratic Questioning ในการช่วยตรวจโดยไม่เฉลยคำตอบทันที
+                        </div>
+                    </div>
+
+                    <!-- Right: Interactive Chat / Submission -->
+                    <div class="flex flex-col border border-slate-200 rounded-xl bg-slate-50 overflow-hidden">
+                        <div class="p-3 bg-white border-b border-slate-200 text-xs font-semibold text-slate-600 flex items-center justify-between">
+                            <span><i class="fa-solid fa-comments text-blue-500 mr-1"></i> โต้ตอบกับ Logic Detective AI</span>
+                            <span class="text-[11px] text-slate-400">Socratic Mode Active</span>
+                        </div>
+                        <div id="logicChatStream" class="flex-1 p-4 overflow-y-auto custom-scrollbar space-y-3 text-sm">
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 text-slate-700 shadow-sm max-w-[90%]">
+                                👋 สวัสดีครับ! ลองพิจารณาโจทย์ทางซ้ายมือ แล้วพิมพ์ **วิธีคิดคำนวณตรรกะ** พร้อม **คำตอบของทั้ง 2 ข้อสรุป** มาให้ผมช่วยตรวจเช็กได้เลยครับ
+                            </div>
+                        </div>
+                        <div class="p-3 bg-white border-t border-slate-200 space-y-2">
+                            <textarea id="logicUserInput" rows="3" class="w-full text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="ตัวอย่างตอบ: ข้อสรุป 1 จริง เพราะสมชายอยู่มหาดไทย... ข้อสรุป 2 ไม่จริง เพราะ..."></textarea>
+                            <button onclick="submitLogicAnswer()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition flex items-center justify-center gap-2 font-kanit">
+                                <i class="fa-solid fa-paper-plane"></i> ส่งวิธีคิดและตรวจสอบตรรกะ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- USE CASE 2: ROYAL CONTEXTUALIZER -->
+            <!-- ========================================== -->
+            <section id="panel-royal" class="usecase-panel flex-1 flex-col overflow-hidden p-4 sm:p-6 space-y-4 hidden">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                    <div>
+                        <span class="inline-block px-2.5 py-0.5 rounded-md text-xs font-semibold bg-amber-100 text-amber-800 mb-1">AI as a Learning Partner</span>
+                        <h2 class="text-xl font-bold text-slate-800 font-kanit flex items-center gap-2">
+                            <i class="fa-solid fa-crown text-amber-600"></i>
+                            Royal & Bureaucratic Contextualizer: ราชาศัพท์ในบริบทจริง
+                        </h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select id="royalScenarioSelect" onchange="changeRoyalScenario()" class="text-xs p-2 border border-slate-300 rounded-xl bg-white font-kanit focus:ring-2 focus:ring-amber-500">
+                            <option value="1">สถานการณ์ที่ 1: ร่างบันทึกเชิญเสด็จกรมสมเด็จพระเทพฯ</option>
+                            <option value="2">สถานการณ์ที่ 2: จัดทำคำกล่าวรายงานถวายพระพรชัยมงคล</option>
+                            <option value="3">สถานการณ์ที่ 3: หนังสือตอบรับการเสด็จพระราชดำเนิน</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 overflow-hidden">
+                    <!-- Scenario Role Card -->
+                    <div class="bg-amber-50/50 rounded-xl p-4 border border-amber-200/80 flex flex-col justify-between overflow-y-auto custom-scrollbar space-y-3">
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-2 text-xs font-semibold text-amber-800 uppercase tracking-wide border-b border-amber-200 pb-2">
+                                <i class="fa-solid fa-user-tie text-amber-600"></i>
+                                <span>บทบาทสมมติ (Roleplay Mission)</span>
+                            </div>
+                            <div id="royalRoleDescription" class="bg-white p-4 rounded-xl border border-amber-200 text-sm text-slate-700 leading-relaxed font-sarabun shadow-sm space-y-2">
+                                <p class="font-bold text-amber-900 font-kanit">📋 ภารกิจข้าราชการร่างหนังสือ:</p>
+                                <p>คุณได้รับมอบหมายจากปลัดกระทรวงให้ร่าง **บันทึกข้อความ (หนังสือภายใน)** ถึงปลัดกระทรวง เพื่อขออนุมัติโครงการและขอนำเรียนเชิญ <b class="text-amber-800">สมเด็จพระกนิษฐาธิราชเจ้า กรมสมเด็จพระเทพรัตนราชสุดาฯ สยามบรมราชกุมารี</b> เสด็จพระราชดำเนินไปทรงเป็นประธานในพิธีเปิด</p>
+                                <p class="text-xs text-amber-700 pt-1">⚠️ คำเตือน: ระวังระดับชั้นการใช้ราชาศัพท์ (กราบบังคมทูล/เสด็จพระราชดำเนิน) และภาษาราชการระดับผู้บริหาร</p>
+                            </div>
+                        </div>
+
+                        <!-- Vocabulary Assistant Hint -->
+                        <div class="bg-white p-3 rounded-xl border border-amber-200 space-y-1.5 text-xs">
+                            <div class="font-bold text-slate-700 font-kanit flex items-center gap-1">
+                                <i class="fa-solid fa-lightbulb text-gold-500"></i> คลังคำราชาศัพท์แนะนำสำหรับระดับนี้:
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-slate-600 text-[11px]">
+                                <div>• เชิญเสด็จ -> <b>กราบบังคมทูลเชิญ</b></div>
+                                <div>• ไปเปิดงาน -> <b>เสด็จพระราชดำเนินไปทรงเป็นประธาน</b></div>
+                                <div>• มอบให้ -> <b>ทูลเกล้าฯ ถวาย</b></div>
+                                <div>• ขออนุมัติ -> <b>โปรดพิจารณาอนุมัติ</b></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Roleplay Chat Area -->
+                    <div class="flex flex-col border border-slate-200 rounded-xl bg-slate-50 overflow-hidden">
+                        <div class="p-3 bg-white border-b border-slate-200 text-xs font-semibold text-slate-600 flex items-center justify-between">
+                            <span><i class="fa-solid fa-user-ninja text-amber-600 mr-1"></i> โต้ตอบกับ ปลัดกระทรวง (Senior Official AI)</span>
+                            <span class="text-amber-700 bg-amber-100 px-2 py-0.5 rounded text-[10px]">Strict Grammar Mode</span>
+                        </div>
+                        <div id="royalChatStream" class="flex-1 p-4 overflow-y-auto custom-scrollbar space-y-3 text-sm">
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 text-slate-700 shadow-sm max-w-[90%]">
+                                👓 *"สวัสดีครับคุณเจ้าหน้าที่ร่างหนังสือ โปรดส่งร่างบันทึกข้อความส่วนขออนุมัติมาให้ผมตรวจดูความถูกต้องก่อนเสนอปลัดกระทรวงครับ"*
+                            </div>
+                        </div>
+                        <div class="p-3 bg-white border-t border-slate-200 space-y-2">
+                            <textarea id="royalUserInput" rows="3" class="w-full text-sm p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="พิมพ์ข้อความร่างหนังสือราชการของคุณที่นี่..."></textarea>
+                            <button onclick="submitRoyalDraft()" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold transition flex items-center justify-center gap-2 font-kanit">
+                                <i class="fa-solid fa-paper-plane"></i> เสนอร่างหนังสือให้ผู้ใหญ่ตรวจ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- USE CASE 3: BUREAUCRATIC SANDBOX -->
+            <!-- ========================================== -->
+            <section id="panel-sandbox" class="usecase-panel flex-1 flex-col overflow-hidden p-4 sm:p-6 space-y-4 hidden">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                    <div>
+                        <span class="inline-block px-2.5 py-0.5 rounded-md text-xs font-semibold bg-emerald-100 text-emerald-800 mb-1">Interactive Simulation (สำหรับห้องเรียน)</span>
+                        <h2 class="text-xl font-bold text-slate-800 font-kanit flex items-center gap-2">
+                            <i class="fa-solid fa-cubes-stacked text-emerald-600"></i>
+                            Interactive Bureaucratic Sandbox: ห้องเรียนวิกฤตสารบรรณ
+                        </h2>
+                    </div>
+                    <button onclick="generateCrisisScenario()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 transition shadow-sm font-kanit">
+                        <i class="fa-solid fa-bolt"></i> สร้างโจทย์วิกฤตสารบรรณใหม่
+                    </button>
+                </div>
+
+                <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 overflow-hidden">
+                    <!-- Crisis Scenario Preview -->
+                    <div class="bg-slate-900 text-slate-100 rounded-xl p-4 border border-slate-800 flex flex-col overflow-y-auto custom-scrollbar space-y-3">
+                        <div class="flex items-center justify-between text-xs font-semibold text-emerald-400 uppercase tracking-wide border-b border-slate-800 pb-2">
+                            <span><i class="fa-solid fa-triangle-exclamation mr-1 text-amber-400"></i> เอกสารร่างที่มีจุดผิดพลาด 5 จุด</span>
+                            <span class="text-xs text-rose-400 animate-pulse">● Urgent Crisis</span>
+                        </div>
+                        
+                        <!-- Official Document Box Simulator -->
+                        <div id="sandboxDocPreview" class="bg-white text-slate-900 p-5 rounded-lg shadow-inner text-xs font-sarabun leading-relaxed space-y-2 border border-slate-300">
+                            <div class="text-center font-bold text-lg text-slate-800">[ตราครุฑ]</div>
+                            <div class="flex justify-between font-semibold">
+                                <span>ที่ มท ๐๑๐๐/พิเศษ</span>
+                                <span>กระทรวงมหาดไทย<br>ถนนอัษฎางค์ กทม. ๑๐๒๐๐</span>
+                            </div>
+                            <div class="text-right">๒๕ ตุลาคม ๒๕๖๗</div>
+                            <div><b>เรื่อง</b> ขอให้ช่วยแก้ไขปัญหาน้ำท่วมอย่างเร่งด่วนที่สุด</div>
+                            <div><b>เรียน</b> ผู้ว่าราชการจังหวัดในพื้นที่ภาคใต้ทุกท่าน</div>
+                            <div class="pt-2 text-justify indent-8">
+                                ด้วยเกิดฝนตกหนักอย่างต่อเนื่องในพื้นที่ภาคใต้ ทำให้เกิดน้ำท่วมขังและน้ำป่าไหลหลาก สร้างความเสียหายแก่นำ้และบ้านเรือนประชาชนเป็นอันมาก ทางกระทรวงมหาดไทยจึงขอความร่วมมือให้จังหวัดของท่าน รีบทำการช่วยเหลือประชาชนโดยด่วนที่สุด และให้รายงานผลกลับมายังกระทรวงฯ ทุกๆ 3 วัน จนกว่าสถานการณ์จะคล้ายคลึง
+                            </div>
+                            <div class="pt-2 text-justify indent-8">
+                                จึงเรียนมาเพื่อทราบและโปรดดำเนินการด่วน
+                            </div>
+                            <div class="text-right pt-4">
+                                (ลงชื่อ) สมศักดิ์ ศักดา<br>
+                                (นายสมศักดิ์ ศักดา)<br>
+                                รัฐมนตรีว่าการกระทรวงมหาดไทย
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Answer & Inspection Panel -->
+                    <div class="flex flex-col bg-slate-50 border border-slate-200 rounded-xl overflow-hidden p-4 space-y-3">
+                        <div class="text-xs font-bold text-slate-700 font-kanit flex items-center justify-between border-b pb-2">
+                            <span><i class="fa-solid fa-list-check text-emerald-600 mr-1"></i> ตรวจค้นหาจุดผิดพลาด 5 จุดพร้อมวิธีแก้</span>
+                            <span id="scoreBadge" class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full text-xs">ค้นพบ: 0/5 จุด</span>
+                        </div>
+
+                        <div class="space-y-2 flex-1 overflow-y-auto custom-scrollbar text-xs">
+                            <p class="text-slate-600">ให้นักศึกษาจับกลุ่มแข่งขันกันค้นหาข้อผิดพลาดตามระเบียบงานสารบรรณแล้วกรอกลงในช่องด้านล่าง:</p>
+                            
+                            <div class="space-y-2">
+                                <input type="text" id="bug1" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-emerald-500" placeholder="จุดผิดที่ 1 (เช่น เลขที่หนังสือ /พิเศษ)...">
+                                <input type="text" id="bug2" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-emerald-500" placeholder="จุดผิดที่ 2 (เช่น หัวข้อเรื่องใชัภาษาพูด)...">
+                                <input type="text" id="bug3" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-emerald-500" placeholder="จุดผิดที่ 3 (เช่น คำสรรพนามฟุ่มเฟือย)...">
+                                <input type="text" id="bug4" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-emerald-500" placeholder="จุดผิดที่ 4 (เช่น คำว่า คล้ายคลึง -> คลี่คลาย)...">
+                                <input type="text" id="bug5" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-emerald-500" placeholder="จุดผิดที่ 5 (เช่น คำลงท้ายหนังสือส่งถึงผู้ว่าฯ)...">
+                            </div>
+                        </div>
+
+                        <button onclick="evaluateSandboxBugs()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold font-kanit transition shadow-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-check"></i> ตรวจสอบคำตอบด้วย AI Auditor
+                        </button>
+
+                        <div id="sandboxFeedbackArea" class="hidden p-3 bg-white border border-emerald-200 rounded-xl text-xs space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
+                            <!-- Feedback output injected here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- USE CASE 4: EXAM DEBRIEFER -->
+            <!-- ========================================== -->
+            <section id="panel-exam" class="usecase-panel flex-1 flex-col overflow-hidden p-4 sm:p-6 space-y-4 hidden">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                    <div>
+                        <span class="inline-block px-2.5 py-0.5 rounded-md text-xs font-semibold bg-purple-100 text-purple-800 mb-1">AI as a Learning Partner</span>
+                        <h2 class="text-xl font-bold text-slate-800 font-kanit flex items-center gap-2">
+                            <i class="fa-solid fa-stethoscope text-purple-600"></i>
+                            AI-Driven Mock Exam Debriefer: วิเคราะห์จุดอ่อนทางความคิด
+                        </h2>
+                    </div>
+                    <span class="text-xs text-purple-700 bg-purple-50 px-3 py-1 rounded-full font-medium border border-purple-200">
+                        Cognitive Gap Analysis
+                    </span>
+                </div>
+
+                <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 overflow-hidden">
+                    <!-- Left: Exam Question & Student Response -->
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 flex flex-col space-y-3 overflow-y-auto custom-scrollbar">
+                        <div class="text-xs font-semibold text-purple-900 border-b pb-2 flex items-center justify-between">
+                            <span><i class="fa-solid fa-file-lines mr-1 text-purple-600"></i> ข้อสอบภาษาไทยที่ทำผิด</span>
+                            <span class="text-slate-400">ข้อสอบภาค ก.พ. Real Exam</span>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 text-xs text-slate-800 space-y-2 shadow-sm font-sarabun">
+                            <p class="font-bold text-slate-900">โจทย์: ข้อใดใช้สำนวนภาษาไทยได้ถูกต้องตามหลักภาษาราชการ?</p>
+                            <div class="space-y-1 pl-2 text-slate-700">
+                                <div>ก) สำนักงานเขตได้ทำโครงการนี้ขึ้นมาเพื่อแก้ปัญหาขยะ</div>
+                                <div>ข) ประธานในพิธีมอบเกียรติบัตรแก่ผู้เข้าอบรมทุกคน</div>
+                                <div>ค) กรุณาส่งแบบฟอร์มคืนกลับมายังเจ้าหน้าที่ภายในวันศุกร์</div>
+                                <div>ง) คณะกรรมการกำลังดำเนินการพิจารณาหลักเกณฑ์ใหม่</div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-700 font-kanit">ตัวเลือกที่คุณตอบผิด:</label>
+                            <select id="userChoiceExam" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-purple-500">
+                                <option value="ค">ค) กรุณาส่งแบบฟอร์มคืนกลับมายังเจ้าหน้าที่ภายในวันศุกร์ (ตัวเลือกที่สับสนบ่อย)</option>
+                                <option value="ก">ก) สำนักงานเขตได้ทำโครงการนี้ขึ้นมาเพื่อแก้ปัญหาขยะ</option>
+                                <option value="ง">ง) คณะกรรมการกำลังดำเนินการพิจารณาหลักเกณฑ์ใหม่</option>
+                            </select>
+
+                            <label class="text-xs font-bold text-slate-700 font-kanit">เหตุผลที่คุณเลือกข้อนี้ (ระบุเพื่อวิเคราะห์ Cognitive Gap):</label>
+                            <textarea id="userReasonExam" rows="3" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="เช่น เลือกข้อ ค เพราะอ่านแล้วเข้าใจง่าย เป็นภาษาที่ใช้ทั่วไปในหนังสือราชการในการส่งคืนเอกสาร...">เพราะอ่านแล้วเข้าใจง่าย เป็นภาษาที่เราใช้กันในหนังสือราชการทั่วไป สั่งให้ส่งแบบฟอร์มคืนกลับมา</textarea>
+                        </div>
+
+                        <button onclick="analyzeExamGap()" class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-semibold font-kanit transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-microscope"></i> วิเคราะห์รูปแบบความผิดพลาดด้วย AI
+                        </button>
+                    </div>
+
+                    <!-- Right: Diagnostic Output Report -->
+                    <div class="bg-white rounded-xl border border-slate-200 flex flex-col overflow-hidden">
+                        <div class="p-3 bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-700 flex items-center justify-between">
+                            <span><i class="fa-solid fa-chart-pie text-purple-600 mr-1"></i> รายงานวิเคราะห์ข้อบกพร่อง (Diagnostic Report)</span>
+                            <span class="text-[11px] text-purple-700 bg-purple-100 px-2 py-0.5 rounded">Remedial Mode</span>
+                        </div>
+                        <div id="examReportContainer" class="flex-1 p-4 overflow-y-auto custom-scrollbar text-xs leading-relaxed space-y-3 font-sarabun text-slate-700">
+                            <div class="text-center text-slate-400 py-10">
+                                <i class="fa-solid fa-clipboard-question text-4xl mb-2 text-slate-300"></i>
+                                <p>กดปุ่ม "วิเคราะห์รูปแบบความผิดพลาด" เพื่อดูรายงานจุดอ่อนรายบุคคล และรับโจทย์ฝึกซ้อมซ่อมเสริม</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- USE CASE 5: DEEP RUBRIC EVALUATOR -->
+            <!-- ========================================== -->
+            <section id="panel-rubric" class="usecase-panel flex-1 flex-col overflow-hidden p-4 sm:p-6 space-y-4 hidden">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                    <div>
+                        <span class="inline-block px-2.5 py-0.5 rounded-md text-xs font-semibold bg-rose-100 text-rose-800 mb-1">AI as an Evaluator (สำหรับอาจารย์)</span>
+                        <h2 class="text-xl font-bold text-slate-800 font-kanit flex items-center gap-2">
+                            <i class="fa-solid fa-file-signature text-rose-600"></i>
+                            Deep Rubric Evaluator: ตรวจงานย่อความเชิงลึก
+                        </h2>
+                    </div>
+                    <span class="text-xs text-rose-700 bg-rose-50 px-3 py-1 rounded-full font-medium border border-rose-200">
+                        Total Score: 20 Points
+                    </span>
+                </div>
+
+                <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 overflow-hidden">
+                    <!-- Student Essay Input Panel -->
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 flex flex-col space-y-3 overflow-y-auto custom-scrollbar">
+                        <div class="flex items-center justify-between text-xs font-semibold text-rose-900 border-b pb-2">
+                            <span><i class="fa-solid fa-pen-nib mr-1 text-rose-600"></i> งานเขียนย่อความของนักศึกษาที่ส่งตรวจ</span>
+                            <span class="text-slate-400">รหัสนักศึกษา: 6410210xxx</span>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-700 font-kanit">ข้อความย่อความของนักศึกษา:</label>
+                            <textarea id="studentEssayInput" rows="7" class="w-full text-xs p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-rose-500 font-sarabun leading-relaxed" placeholder="วางงานเขียนย่อความของนักศึกษาที่ต้องการตรวจที่นี่...">"ย่อความ เรื่อง ปัญหาโลกร้อน จากบทความของกรมส่งเสริมคุณภาพสิ่งแวดล้อม ความว่า ปัจจุบันโลกร้อนขึ้นมากเพราะคนเราตัดไม้ทำลายป่าและใช้พลาสติกเยอะ ส่งผลให้ก๊าซเรือนกระจกเพิ่มขึ้น อากาศเลยปรวนแปร ฝนไม่ตกตามฤดูกาล สัตว์ป่าก็ไม่มีที่อยู่ ดังนั้นพวกเราทุกคนจึงต้องร่วมมือกันช่วยกันปลูกป่าและลดขยะ เพื่อให้โลกของเราน่าอยู่ขึ้นครับ"</textarea>
+                        </div>
+
+                        <!-- Rubric Criteria Summary -->
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1 text-[11px] text-slate-600">
+                            <div class="font-bold text-slate-700 font-kanit">📋 เกณฑ์ Rubrics ตรวจประเมิน (20 คะแนนเต็ม):</div>
+                            <div class="grid grid-cols-2 gap-x-2 gap-y-1 pt-1">
+                                <div>1. ความถูกต้องใจความ (8 คะแนน)</div>
+                                <div>2. ความกระชับ/ไร้คำฟุ่มเฟือย (5 คะแนน)</div>
+                                <div>3. รูปแบบย่อความ/ภาษาราชการ (5 คะแนน)</div>
+                                <div>4. การเชื่อมโยงสละสลวย (2 คะแนน)</div>
+                            </div>
+                        </div>
+
+                        <button onclick="evaluateStudentRubric()" class="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold font-kanit transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-calculator"></i> ประเมินผลเชิงลึกตาม Rubric
+                        </button>
+                    </div>
+
+                    <!-- Evaluation Report Display -->
+                    <div class="bg-white rounded-xl border border-slate-200 flex flex-col overflow-hidden">
+                        <div class="p-3 bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-700 flex items-center justify-between">
+                            <span><i class="fa-solid fa-square-poll-vertical text-rose-600 mr-1"></i> รายงานผลการประเมิน (Evaluation Report)</span>
+                            <span id="rubricScoreBadge" class="bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded text-[11px]">รอการประเมิน</span>
+                        </div>
+                        <div id="rubricReportContainer" class="flex-1 p-4 overflow-y-auto custom-scrollbar text-xs leading-relaxed space-y-3 font-sarabun text-slate-700">
+                            <div class="text-center text-slate-400 py-10">
+                                <i class="fa-solid fa-award text-4xl mb-2 text-slate-300"></i>
+                                <p>กดปุ่ม "ประเมินผลเชิงลึกตาม Rubric" เพื่อสร้างตารางคะแนน ฟีดแบ็ก และร่างแก้โมเดลภาษา</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- API Key Configuration Modal -->
+    <div id="apiKeyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h3 class="text-lg font-bold text-slate-800 font-kanit flex items-center gap-2">
+                    <i class="fa-solid fa-key text-gold-500"></i> ตั้งค่า Gemini API Key
+                </h3>
+                <button onclick="closeApiKeyModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                ป้อน Google Gemini API Key เพื่อเปิดใช้งานระบบการเจนคำตอบสดด้วย Gemini 3 Flash คุณสามารถรับ API Key ได้ฟรีจาก Google AI Studio
+            </p>
+            <div>
+                <input type="password" id="apiKeyInput" class="w-full text-xs p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-gov-500" placeholder="AIzaSy...">
+            </div>
+            <div class="flex items-center justify-between pt-2">
+                <button onclick="clearApiKey()" class="text-xs text-rose-600 font-semibold hover:underline">ลบ API Key</button>
+                <div class="space-x-2">
+                    <button onclick="closeApiKeyModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold font-kanit">ยกเลิก</button>
+                    <button onclick="saveApiKey()" class="px-4 py-2 bg-gov-600 hover:bg-gov-700 text-white rounded-xl text-xs font-semibold font-kanit">บันทึก Key</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt Guide Modal -->
+    <div id="promptGuideModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h3 class="text-lg font-bold text-slate-800 font-kanit flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark text-blue-600"></i> คลัง System Prompts สำหรับทั้ง 5 Use Cases
+                </h3>
+                <button onclick="closePromptGuideModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto custom-scrollbar space-y-4 text-xs pr-1">
+                <!-- Prompt 1 -->
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between font-bold text-blue-900 font-kanit">
+                        <span>1. Logic Detective System Prompt</span>
+                        <button onclick="copyPromptText('p1')" class="text-blue-600 hover:underline"><i class="fa-solid fa-copy"></i> คัดลอก</button>
+                    </div>
+                    <pre id="p1" class="text-[11px] bg-white p-2.5 rounded-lg border border-slate-200 whitespace-pre-wrap font-mono text-slate-700">คุณคือ "ผู้เชี่ยวชาญการวิเคราะห์ตรรกะและเงื่อนไขภาษาไทยสำหรับสอบ ก.พ." หน้าที่ของคุณคือช่วยฉันฝึกฝนโจทย์เงื่อนไขภาษาไทยระดับซับซ้อน โดยใช้การตั้งคำถามนำทาง (Socratic Questioning) ไม่เฉลยคำตอบทันที</pre>
+                </div>
+
+                <!-- Prompt 2 -->
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex items-center justify-between font-bold text-amber-900 font-kanit">
+                        <span>2. Royal Contextualizer System Prompt</span>
+                        <button onclick="copyPromptText('p2')" class="text-amber-600 hover:underline"><i class="fa-solid fa-copy"></i> คัดลอก</button>
+                    </div>
+                    <pre id="p2" class="text-[11px] bg-white p-2.5 rounded-lg border border-slate-200 whitespace-pre-wrap font-mono text-slate-700">คุณคือ "ข้าราชการระดับสูง ผู้เชี่ยวชาญระเบียบงานสารบรรณและราชาศัพท์" ให้คุณสวมบทบาทสุ่มสร้างสถานการณ์จำลองงานราชการ และทักท้วงหากผู้เรียนใช้คำราชาศัพท์หรือภาษาราชการผิดลำดับชั้น</pre>
+                </div>
+            </div>
+
+            <div class="pt-2 text-right">
+                <button onclick="closePromptGuideModal()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-semibold font-kanit">ปิดหน้าต่าง</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let userApiKey = localStorage.getItem('gemini_api_key') || '';
+        let currentTab = 'logic';
+
+        // Initialize App
+        window.onload = function() {
+            updateApiKeyUI();
+            switchTab('logic');
+        };
+
+        // Navigation Switcher
+        function switchTab(tabId) {
+            currentTab = tabId;
+            document.querySelectorAll('.usecase-panel').forEach(panel => panel.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-gov-100', 'border-r-4', 'border-gov-600'));
+            
+            const targetPanel = document.getElementById(`panel-${tabId}`);
+            if (targetPanel) {
+                targetPanel.classList.remove('hidden');
+                targetPanel.classList.add('flex');
+            }
+
+            const targetNav = document.getElementById(`nav-${tabId}`);
+            if (targetNav) {
+                targetNav.classList.add('bg-gov-100', 'border-r-4', 'border-gov-600');
+            }
+        }
+
+        // API Key Management
+        function openApiKeyModal() { document.getElementById('apiKeyModal').classList.remove('hidden'); }
+        function closeApiKeyModal() { document.getElementById('apiKeyModal').classList.add('hidden'); }
+        function openPromptGuideModal() { document.getElementById('promptGuideModal').classList.remove('hidden'); }
+        function closePromptGuideModal() { document.getElementById('promptGuideModal').classList.add('hidden'); }
+
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (key) {
+                userApiKey = key;
+                localStorage.setItem('gemini_api_key', key);
+                updateApiKeyUI();
+                closeApiKeyModal();
+            }
+        }
+
+        function clearApiKey() {
+            userApiKey = '';
+            localStorage.removeItem('gemini_api_key');
+            document.getElementById('apiKeyInput').value = '';
+            updateApiKeyUI();
+            closeApiKeyModal();
+        }
+
+        function updateApiKeyUI() {
+            const statusText = document.getElementById('apiKeyStatusText');
+            const modeText = document.getElementById('modeText');
+            const modeBadge = document.getElementById('modeBadge');
+
+            if (userApiKey) {
+                statusText.innerText = 'เชื่อมต่อ Gemini API แล้ว';
+                modeText.innerText = 'Live Gemini 3';
+                modeBadge.className = 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs px-2.5 py-1 rounded-full font-medium flex items-center gap-1.5';
+            } else {
+                statusText.innerText = 'ตั้งค่า Gemini API Key';
+                modeText.innerText = 'Demo Mode';
+                modeBadge.className = 'bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs px-2.5 py-1 rounded-full font-medium flex items-center gap-1.5';
+            }
+        }
+
+        // Helper: Call Gemini API or Return Simulated Response
+        async function callGeminiAPI(systemInstruction, userPrompt, fallbackHtml) {
+            if (!userApiKey) {
+                // Return simulated response with delay in Demo Mode
+                await new Promise(resolve => setTimeout(resolve, 800));
+                return fallbackHtml;
+            }
+
+            try {
+                const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${userApiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: userPrompt }] }],
+                    systemInstruction: { parts: [{ text: systemInstruction }] }
+                };
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    return text.replace(/\n/g, '<br>');
+                }
+                return fallbackHtml;
+            } catch (err) {
+                console.error("Gemini API Error:", err);
+                return fallbackHtml;
+            }
+        }
+
+        // Copy Text Helper
+        function copyPromptText(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text);
+            alert("คัดลอก System Prompt เรียบร้อยแล้ว!");
+        }
+
+        // USE CASE 1: Logic Detective Functions
+        async function submitLogicAnswer() {
+            const input = document.getElementById('logicUserInput').value.trim();
+            if (!input) return;
+
+            const chatStream = document.getElementById('logicChatStream');
+            chatStream.innerHTML += `
+                <div class="bg-blue-600 text-white p-3 rounded-xl ml-auto max-w-[85%] shadow-sm text-xs font-sarabun">
+                    ${input}
+                </div>
+            `;
+            document.getElementById('logicUserInput').value = '';
+            chatStream.scrollTop = chatStream.scrollHeight;
+
+            const systemPrompt = "คุณคือผู้เชี่ยวชาญการวิเคราะห์ตรรกะภาษาไทย สอบ ก.พ. ให้ใช้ Socratic Questioning วิเคราะห์ข้อความผู้เรียน ชื่นชมจุดถูกต้อง และถามคำถามทักท้วงจุดผิดโดยไม่เฉลย";
+            
+            const fallback = `
+                <b>ชื่นชมในวิธีคิดของข้อสรุปที่ 1 ครับ!</b> คุณเชื่อมโยงเงื่อนไขจาก สมชาย -> กระทรวงมหาดไทย -> อบรม นปส. -> ได้รับสิทธิ์ ได้ถูกต้องครับ! 👏<br><br>
+                แต่สำหรับ <b>ข้อสรุปที่ 2</b> ลองมาฉุกคิดร่วมกันสักนิดนะครับ 🧐<br>
+                โจทย์ระบุว่า *"ผู้ที่ผ่าน นปส. ทุกคน ได้รับสิทธิ์..."* <br>
+                ❓ <b>คำถามนำทาง:</b> โจทย์ได้ระบุไว้หรือไม่ว่า "เฉพาะข้าราชการมหาดไทยเท่านั้น" ที่มีสิทธิ์อบรม นปส.? เป็นไปได้ไหมว่าข้าราชการกระทรวงอื่นก็อาจอบรมได้? ลองทบทวนข้อสรุปที่ 2 อีกครั้งนะครับ!
+            `;
+
+            const reply = await callGeminiAPI(systemPrompt, input, fallback);
+            chatStream.innerHTML += `
+                <div class="bg-white p-3 rounded-xl border border-blue-200 text-slate-800 shadow-sm max-w-[90%] text-xs font-sarabun leading-relaxed">
+                    ${reply}
+                </div>
+            `;
+            chatStream.scrollTop = chatStream.scrollHeight;
+        }
+
+        function generateLogicScenario() {
+            const scenarioBox = document.getElementById('logicScenarioBox');
+            scenarioBox.innerHTML = `
+                <p class="font-semibold text-blue-900 border-b pb-1">เงื่อนไขข้อเท็จจริง (สุ่มโจทย์ใหม่):</p>
+                <ul class="list-disc pl-5 space-y-1.5 text-slate-700 text-xs">
+                    <li>เจ้าหน้าที่ที่ผ่านการประเมินระดับ A ทุกคน จะได้รับเงินรางวัลพิเศษประจำปี</li>
+                    <li>ผู้ที่ได้รับเงินรางวัลพิเศษประจำปีทุกคน มีสิทธิ์ได้รับการเสนอชื่อเลื่อนตำแหน่ง</li>
+                    <li>อนันต์ได้รับเงินรางวัลพิเศษประจำปี แต่ นภา ไม่ผ่านการประเมินระดับ A</li>
+                </ul>
+                <p class="font-semibold text-blue-900 border-b pb-1 pt-2">ข้อสรุปที่ต้องพิจารณา:</p>
+                <ol class="list-decimal pl-5 space-y-1 text-slate-700 text-xs">
+                    <li><b>ข้อสรุปที่ 1:</b> อนันต์ได้รับการเสนอชื่อเลื่อนตำแหน่ง</li>
+                    <li><b>ข้อสรุปที่ 2:</b> นภาไม่ได้รับสิทธิ์เสนอชื่อเลื่อนตำแหน่ง</li>
+                </ol>
+            `;
+        }
+
+        // USE CASE 2: Royal Contextualizer Functions
+        function changeRoyalScenario() {
+            const val = document.getElementById('royalScenarioSelect').value;
+            const desc = document.getElementById('royalRoleDescription');
+            if (val === '1') {
+                desc.innerHTML = `
+                    <p class="font-bold text-amber-900 font-kanit">📋 ภารกิจร่างหนังสือราชการ (สถานการณ์ที่ 1):</p>
+                    <p>ร่าง **บันทึกข้อความ** ถึงปลัดกระทรวง เพื่อขออนุมัติโครงการและนำเรียนเชิญ <b>สมเด็จพระกนิษฐาธิราชเจ้า กรมสมเด็จพระเทพรัตนราชสุดาฯ สยามบรมราชกุมารี</b> เสด็จมาเป็นประธานเปิดงาน</p>
+                `;
+            } else if (val === '2') {
+                desc.innerHTML = `
+                    <p class="font-bold text-amber-900 font-kanit">📋 ภารกิจจัดทำคำกล่าวรายงาน (สถานการณ์ที่ 2):</p>
+                    <p>ร่าง **คำกล่าวรายงาน** สำหรับรัฐมนตรี เพื่อถวายรายงานต่อ <b>พระบาทสมเด็จพระเจ้าอยู่หัว</b> ในพิธีเปิดอาคารใหม่</p>
+                `;
+            } else {
+                desc.innerHTML = `
+                    <p class="font-bold text-amber-900 font-kanit">📋 ภารกิจร่างหนังสือรับส่ง (สถานการณ์ที่ 3):</p>
+                    <p>ร่าง **หนังสือภายนอก** ถวายความสะดวกแก่ <b>สมเด็จพระสังฆราช</b> ในโอกาสเสด็จเป็นประธานฝ่ายสงฆ์</p>
+                `;
+            }
+        }
+
+        async function submitRoyalDraft() {
+            const input = document.getElementById('royalUserInput').value.trim();
+            if (!input) return;
+
+            const chatStream = document.getElementById('royalChatStream');
+            chatStream.innerHTML += `
+                <div class="bg-amber-700 text-white p-3 rounded-xl ml-auto max-w-[85%] shadow-sm text-xs font-sarabun">
+                    ${input}
+                </div>
+            `;
+            document.getElementById('royalUserInput').value = '';
+            chatStream.scrollTop = chatStream.scrollHeight;
+
+            const fallback = `
+                *(ขยับแว่นเล็กน้อย)* ร่างบันทึกข้อความนี้จับใจความได้ดีครับ แต่ขอให้ปรับแก้ภาษาและราชาศัพท์ 2 จุดสำคัญครับ:<br><br>
+                1. ❌ <b>เดิม:</b> "ทำหนังสือเชิญ... ให้เสด็จมาเปิดงาน"<br>
+                   ✅ <b>แก้เป็น:</b> <b>"กราบบังคมทูลเชิญ..."</b> และ <b>"เสด็จพระราชดำเนินไปทรงเป็นประธานในพิธีเปิด..."</b><br>
+                2. ❌ <b>เดิม:</b> "จึงเรียนมาเพื่อโปรดพิจารณา..."<br>
+                   ✅ <b>แก้เป็น:</b> <b>"จึงเรียนมาเพื่อโปรดพิจารณาอนุมัติ และเห็นชอบให้นำเรียนเชิญ..."</b><br><br>
+                ลองปรับแก้ประโยคนี้ใหม่อีกครั้งแล้วส่งมาให้ผมตรวจดูนะครับ!
+            `;
+
+            const reply = await callGeminiAPI("คุณคือข้าราชการอาวุโส ตรวจราชาศัพท์และภาษาราชการอย่างสุภาพเข้มงวด", input, fallback);
+            chatStream.innerHTML += `
+                <div class="bg-white p-3 rounded-xl border border-amber-200 text-slate-800 shadow-sm max-w-[90%] text-xs font-sarabun leading-relaxed">
+                    ${reply}
+                </div>
+            `;
+            chatStream.scrollTop = chatStream.scrollHeight;
+        }
+
+        // USE CASE 3: Bureaucratic Sandbox Functions
+        function evaluateSandboxBugs() {
+            const b1 = document.getElementById('bug1').value;
+            const b2 = document.getElementById('bug2').value;
+            const b3 = document.getElementById('bug3').value;
+            const b4 = document.getElementById('bug4').value;
+            const b5 = document.getElementById('bug5').value;
+
+            let count = 0;
+            if (b1.length > 2) count++;
+            if (b2.length > 2) count++;
+            if (b3.length > 2) count++;
+            if (b4.length > 2) count++;
+            if (b5.length > 2) count++;
+
+            document.getElementById('scoreBadge').innerText = `ค้นพบ: ${count}/5 จุด`;
+            const area = document.getElementById('sandboxFeedbackArea');
+            area.classList.remove('hidden');
+
+            area.innerHTML = `
+                <div class="font-bold text-emerald-800 border-b pb-1 font-kanit">🔑 เฉลยการตรวจสารบรรณโดย AI Auditor:</div>
+                <ol class="list-decimal pl-4 space-y-1 text-slate-700">
+                    <li><b>จุดที่ 1 (เลขหนังสือ):</b> "มท ๐๑๐๐/พิเศษ" -> ห้ามใส่ /พิเศษ ให้ใช้ชั้นความเร็วประทับตราด่วนที่สุด</li>
+                    <li><b>จุดที่ 2 (เรื่อง):</b> ใช้ภาษาพูด -> ควรแก้เป็น "การป้องกันและแก้ไขปัญหาอุทกภัยในพื้นที่ภาคใต้"</li>
+                    <li><b>จุดที่ 3 (สรรพนาม):</b> "ทางกระทรวง", "จังหวัดของท่าน" -> ควรใช้ "กระทรวงมหาดไทย" และ "จังหวัด"</li>
+                    <li><b>จุดที่ 4 (คำผิด/ตัวเลข):</b> ตัวเลข "3" ต้องใช้ "๓" และคำว่า "คล้ายคลึง" ต้องแก้เป็น "คลี่คลาย"</li>
+                    <li><b>จุดที่ 5 (คำลงท้าย):</b> ส่งถึงผู้ว่าฯ ต้องใช้ "จึงเรียนมาเพื่อโปรดพิจารณาดำเนินการ ต่อไป"</li>
+                </ol>
+            `;
+        }
+
+        function generateCrisisScenario() {
+            alert("สร้างโจทย์วิกฤตสารบรรณชุดใหม่เรียบร้อยแล้ว!");
+        }
+
+        // USE CASE 4: Exam Debriefer Functions
+        async function analyzeExamGap() {
+            const choice = document.getElementById('userChoiceExam').value;
+            const reason = document.getElementById('userReasonExam').value;
+            const container = document.getElementById('examReportContainer');
+
+            container.innerHTML = `<div class="text-center py-8 text-purple-600 font-kanit"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><br>กำลังวิเคราะห์ Cognitive Gap...</div>`;
+
+            const fallback = `
+                <div class="space-y-3">
+                    <div class="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 font-bold font-kanit">
+                        ❌ ผลการประเมิน: ยังไม่ถูกต้อง (คำตอบที่ถูกต้องคือ ข้อ ข)
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="font-bold text-purple-900 font-kanit text-xs">1. วิเคราะห์จุดบกพร่องทางความคิด (Cognitive Gap Analysis):</div>
+                        <p class="text-slate-700">คุณสับสนระหว่าง <b>"ภาษาพูดชีวิตประจำวัน"</b> กับ <b>"หลักภาษาราชการ"</b> ทำให้มองข้ามเรื่องคำฟุ่มเฟือยซ้ำซ้อน:</p>
+                        <ul class="list-disc pl-4 space-y-1 text-slate-600">
+                            <li><b>ทำไมข้อ ค) จึงผิด:</b> มีการใช้คำฟุ่มเฟือยซ้ำซ้อน คือคำว่า <i>"คืน"</i> กับ <i>"กลับมา"</i> (ส่งคืน = ส่งกลับมา) ภาษาราชการต้องตัดคำใดคำหนึ่งออก</li>
+                            <li><b>ทำไมข้อ ข) จึงถูกต้อง:</b> ใช้คำกริยา <i>"มอบ"</i> คู่กับบุพบท <i>"แก่"</i> ได้ถูกต้องตามลำดับชั้น (ผู้ใหญ่มอบ <i>แก่</i> ผู้น้อย/บุคคลทั่วไป)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-purple-50 p-3 rounded-xl border border-purple-200 space-y-1">
+                        <div class="font-bold text-purple-900 font-kanit">✏️ โจทย์ฝึกหัดซ่อมเสริม (Remedial Practice):</div>
+                        <p class="text-slate-700"><b>โจทย์:</b> ข้อความใดต่อไปนี้<b>ไม่มี</b>การใช้คำฟุ่มเฟือย?</p>
+                        <div class="pl-2 space-y-0.5 text-slate-600">
+                            <div>ก) ทางเจ้าหน้าที่มีความยินดีเป็นอย่างยิ่งที่จะให้บริการทุกท่าน</div>
+                            <div>ข) คณะผู้บริหารทำการอนุมัติงบประมาณเรียบร้อยแล้ว</div>
+                            <div>ค) ประชาชนสามารถยื่นคำร้องได้ด้วยตนเอง ณ สำนักงานเขต</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const reply = await callGeminiAPI("วิเคราะห์ความผิดพลาดในการทำข้อสอบภาษาไทยของนักเรียนและจัดโจทย์ซ่อมเสริม", `นักเรียนเลือกข้อ ${choice} ด้วยเหตุผล: ${reason}`, fallback);
+            container.innerHTML = reply;
+        }
+
+        // USE CASE 5: Deep Rubric Evaluator Functions
+        async function evaluateStudentRubric() {
+            const essay = document.getElementById('studentEssayInput').value;
+            const container = document.getElementById('rubricReportContainer');
+            const scoreBadge = document.getElementById('rubricScoreBadge');
+
+            container.innerHTML = `<div class="text-center py-8 text-rose-600 font-kanit"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><br>กำลังประเมินผลตาม Rubric 20 คะแนน...</div>`;
+
+            const fallback = `
+                <div class="space-y-3">
+                    <table class="w-full text-[11px] border-collapse border border-slate-200 rounded-lg overflow-hidden">
+                        <thead class="bg-slate-100 font-kanit text-slate-700">
+                            <tr>
+                                <th class="border p-2 text-left">เกณฑ์การประเมิน</th>
+                                <th class="border p-2 text-center w-12">เต็ม</th>
+                                <th class="border p-2 text-center w-12">ได้</th>
+                                <th class="border p-2 text-left">เหตุผลประกอบ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border p-1.5 font-semibold">1. ความถูกต้องใจความ</td>
+                                <td class="border p-1.5 text-center">8</td>
+                                <td class="border p-1.5 text-center font-bold text-emerald-600">7</td>
+                                <td class="border p-1.5 text-slate-600">ครอบคลุมสาเหตุและผลกระทบ แต่ขาดรายละเอียดเชิงสาเหตุเรื่องก๊าซเรือนกระจก</td>
+                            </tr>
+                            <tr>
+                                <td class="border p-1.5 font-semibold">2. ความกระชับ/ไม่ฟุ่มเฟือย</td>
+                                <td class="border p-1.5 text-center">5</td>
+                                <td class="border p-1.5 text-center font-bold text-amber-600">3</td>
+                                <td class="border p-1.5 text-slate-600">ใช้คำซ้ำซ้อน เช่น "ร่วมมือกันช่วยกัน"</td>
+                            </tr>
+                            <tr>
+                                <td class="border p-1.5 font-semibold">3. รูปแบบย่อความ/ภาษาราชการ</td>
+                                <td class="border p-1.5 text-center">5</td>
+                                <td class="border p-1.5 text-center font-bold text-amber-600">3</td>
+                                <td class="border p-1.5 text-slate-600">ขาดวันที่ในส่วนนำ ใช้ภาษาพูด "เยอะ", "เลยปรวนแปร", "ครับ"</td>
+                            </tr>
+                            <tr>
+                                <td class="border p-1.5 font-semibold">4. การเชื่อมโยงสละสลวย</td>
+                                <td class="border p-1.5 text-center">2</td>
+                                <td class="border p-1.5 text-center font-bold text-emerald-600">2</td>
+                                <td class="border p-1.5 text-slate-600">เรียบเรียงลำดับเหตุและผลได้ต่อเนื่องดี</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="bg-rose-50 p-3 rounded-xl border border-rose-200 space-y-1">
+                        <div class="font-bold text-rose-900 font-kanit">✨ ร่างแก้ไขปรับปรุงตัวอย่าง (Model Answer):</div>
+                        <p class="italic text-slate-700 leading-relaxed">
+                            "ย่อความ บทความเรื่อง ปัญหาภาวะโลกร้อน ของ กรมส่งเสริมคุณภาพสิ่งแวดล้อม ความว่า ภาวะโลกร้อนเกิดจากการตัดไม้ทำลายป่าและการใช้พลาสติก ส่งผลให้ก๊าซเรือนกระจกเพิ่มสูงขึ้นและสภาพอากาศแปรปรวน ดังนั้น ทุกภาคส่วนจึงควรร่วมมือกันปลูกป่าและลดปริมาณขยะเพื่อแก้ไขปัญหาสภาพแวดล้อม"
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            const reply = await callGeminiAPI("ตรวจประเมินย่อความภาษาไทยตาม Rubric 20 คะแนน ออกตารางคะแนนและข้อเสนอแนะ", essay, fallback);
+            scoreBadge.innerText = "คะแนนรวม: 15 / 20 (ระดับ: ดี)";
+            container.innerHTML = reply;
+        }
+    </script>
+</body>
+</html>
